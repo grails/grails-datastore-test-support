@@ -1,0 +1,9 @@
+.gradle/
+build/
+.settings/
+.idea/
+.classpath
+.project
+target/
+bin/
+target-eclipse/

@@ -1,0 +1,53 @@
+apply from:'./gradle/maven-central-build.gradle'
+
+configurations {
+    provided
+}
+
+ext {
+    grailsVersion = '2.3.9'
+    groovyVersion = '2.1.9'
+    datastoreVersion = '3.1.0.RELEASE'
+}
+
+group = 'org.grails'
+version = "2.3.0.BUILD-SNAPSHOT"
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    provided "org.codehaus.groovy:groovy-all:$groovyVersion"
+    provided "org.grails:grails-plugin-testing:$grailsVersion"
+    provided "org.grails:grails-datastore-gorm:$datastoreVersion"
+    provided "org.grails:grails-datastore-gorm-hibernate4:$datastoreVersion"
+    provided "org.grails:grails-datastore-core:$datastoreVersion"
+    provided "javax.servlet:javax.servlet-api:3.0.1"
+    provided "junit:junit:4.11"
+}
+
+sourceSets.main.compileClasspath += configurations.provided
+sourceSets.test.compileClasspath += configurations.provided
+javadoc.classpath += configurations.provided
+
+idea {
+  module{
+    scopes.PROVIDED.plus += configurations.provided
+  }
+}
+eclipse {
+  classpath {
+    plusConfigurations += configurations.provided
+  }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}
