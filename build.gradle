@@ -31,6 +31,7 @@ dependencies {
     provided "org.grails:grails-datastore-core:$datastoreVersion"
     provided "javax.servlet:javax.servlet-api:3.0.1"
     provided "junit:junit:4.11"
+    provided "org.springframework:spring-orm:4.0.5.RELEASE"
 }
 
 sourceSets.main.compileClasspath += configurations.provided
