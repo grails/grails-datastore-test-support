@@ -14,8 +14,12 @@ class HibernateMixinSpec extends Specification{
         hibernateDomain([Person])
     }
     void "Test that it is possible to use a Hibernate mixin to test Hibernate interaction"() {
+        given:
+            def person = new Person(name:'John Doe')
+            def personId = person.save(flush:true, failOnError:true)?.id
         expect:"Dynamic finders to work"
-            Person.count() == 0
+            Person.count() == 1
+            Person.get(personId).name == 'John Doe'
             sessionFactory != null
             transactionManager != null
             session != null

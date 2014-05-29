@@ -5,8 +5,8 @@ configurations {
 }
 
 ext {
-    grailsVersion = '2.4.0'
-    groovyVersion = '2.3.1'
+    grailsVersion = '2.4.1.BUILD-SNAPSHOT'
+    groovyVersion = '2.3.2'
     datastoreVersion = '3.1.0.RELEASE'
 }
 
@@ -32,6 +32,7 @@ dependencies {
     provided "javax.servlet:javax.servlet-api:3.0.1"
     provided "junit:junit:4.11"
     provided "org.springframework:spring-orm:4.0.5.RELEASE"
+    provided "com.h2database:h2:1.3.173"
 }
 
 sourceSets.main.compileClasspath += configurations.provided

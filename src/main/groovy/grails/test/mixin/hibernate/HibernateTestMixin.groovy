@@ -14,24 +14,19 @@
  */
 package grails.test.mixin.hibernate
 
-import grails.orm.bootstrap.HibernateDatastoreSpringInitializer
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.test.runtime.TestPluginRegistrar
+import grails.test.runtime.TestPluginUsage
+import grails.test.runtime.gorm.HibernateTestPlugin
 import groovy.transform.CompileStatic
-import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
-import org.codehaus.groovy.grails.commons.InstanceFactoryBean
-import org.codehaus.groovy.grails.orm.hibernate.support.HibernatePersistenceContextInterceptor
-import org.grails.datastore.gorm.GormEnhancer
+
+import javax.activation.DataSource
+
 import org.hibernate.Session
 import org.hibernate.SessionFactory
-import org.junit.After
-import org.junit.AfterClass
-import org.junit.Before
-import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.orm.hibernate4.SessionHolder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionSynchronizationManager
-
-import javax.activation.DataSource
 
 /**
  * A Mixin that sets up a Hibernate domain model
@@ -39,116 +34,62 @@ import javax.activation.DataSource
  * @author Graeme Rocher
  * @since 3.0.4
  */
-class HibernateTestMixin extends GrailsUnitTestMixin{
-
-    /**
-     * The current transaction manager
-     */
-    static PlatformTransactionManager transactionManager
-
-    /**
-     * The current session factory. Will be closed with by the ApplicationContext
-     */
-    static SessionFactory sessionFactory
-
-    /**
-     * Used to setup session handling
-     */
-    HibernatePersistenceContextInterceptor hibernateInterceptor
-
-    /**
-     * Current hibernate session
-     */
-    Session session
-
+@CompileStatic
+class HibernateTestMixin extends GrailsUnitTestMixin implements TestPluginRegistrar {
+    private static final Set<String> REQUIRED_FEATURES = (["hibernateGorm"] as Set<String>).asImmutable()
+    
+    public HibernateTestMixin(Set<String> features) {
+        super((REQUIRED_FEATURES + features) as Set<String>)
+    }
+    
+    public HibernateTestMixin() {
+        super(REQUIRED_FEATURES)
+    }
+    
     /**
      * Sets up a GORM for Hibernate domain for the given domain classes
      *
      * @param persistentClasses
      */
-    @CompileStatic
-    static SessionFactory hibernateDomain(Collection<Class> persistentClasses) {
-        def initializer = new HibernateDatastoreSpringInitializer(persistentClasses)
-        configureDefaultDataSource()
-        completeConfiguration(persistentClasses,initializer)
+    void hibernateDomain(Collection<Class> persistentClasses) {
+        getRuntime().publishEvent("hibernateDomain", [domains: persistentClasses])
     }
-
-    @Before
-    void connectionSession() {
-        if(sessionFactory) {
-            hibernateInterceptor = new HibernatePersistenceContextInterceptor(sessionFactory: sessionFactory)
-            hibernateInterceptor.init()
-            SessionHolder holder = TransactionSynchronizationManager.getResource(sessionFactory)
-            session = holder.getSession()
-        }
-    }
-
-    @After
-    void destroySession() {
-        if(hibernateInterceptor) {
-            hibernateInterceptor.destroy()
-            session = null
-            hibernateInterceptor = null
-        }
-    }
-
-    @AfterClass
-    static void cleanupHibernate() {
-        transactionManager = null
-        sessionFactory = null
-    }
-
-    protected static void configureDefaultDataSource() {
-        defineBeans {
-            dataSource(DriverManagerDataSource) {
-                url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_DELAY=-1"
-                driverClassName = "org.h2.Driver"
-                username = "sa"
-                password = ""
-            }
-        }
+    
+    void hibernateDomain(DataSource dataSource, Collection<Class> persistentClasses) {
+        getRuntime().publishEvent("hibernateDomain", [domains: persistentClasses, dataSource: dataSource])
     }
 
     /**
-     * Sets up a GORM for Hibernate domain for the given Mongo instance and domain classes
+     * Sets up a GORM for Hibernate domain for the given configuration and domain classes
      *
      * @param persistentClasses
      */
-    static SessionFactory hibernateDomain(DataSource dataSource, Collection<Class> persistentClasses) {
-        def initializer = new HibernateDatastoreSpringInitializer(persistentClasses)
-        defineBeans {
-            delegate.dataSource(InstanceFactoryBean, dataSource)
+    void hibernateDomain(Map config, Collection<Class> persistentClasses) {
+        getRuntime().publishEvent("hibernateDomain", [domains: persistentClasses, config: config])
+    }
+    
+    public Iterable<TestPluginUsage> getTestPluginUsages() {
+        return TestPluginUsage.createForActivating(HibernateTestPlugin)
+    }
+    
+    public PlatformTransactionManager getTransactionManager() {
+        getMainContext().getBean("transactionManager", PlatformTransactionManager)
+    }
+    
+    public Session getSession() {
+        Object value = TransactionSynchronizationManager.getResource(getSessionFactory());
+        if (value instanceof Session) {
+            return (Session) value;
         }
-        completeConfiguration(persistentClasses,initializer)
-    }
-
-    /**
-     * Sets up a GORM for MongoDB domain for the given configuration and domain classes
-     *
-     * @param persistentClasses
-     */
-    @CompileStatic
-    static SessionFactory hibernateDomain(Map config, Collection<Class> persistentClasses) {
-        def initializer = new HibernateDatastoreSpringInitializer(persistentClasses)
-        def props = new Properties()
-        props.putAll(config)
-        initializer.setConfiguration(props)
-        configureDefaultDataSource()
-        completeConfiguration(persistentClasses,initializer)
-    }
-
-    @CompileStatic
-    protected static SessionFactory completeConfiguration(Collection<Class> persistentClasses, HibernateDatastoreSpringInitializer initializer) {
-        def application = getGrailsApplication()
-        for(cls in persistentClasses) {
-            application.addArtefact(DomainClassArtefactHandler.TYPE, cls)
+        if (value instanceof SessionHolder) {
+            SessionHolder sessionHolder = (SessionHolder) value;
+            return sessionHolder.getSession();
         }
-
-        def context = getApplicationContext()
-        initializer.configureForBeanDefinitionRegistry(context)
-        context.getBeansOfType(GormEnhancer)
-        transactionManager = context.getBean(PlatformTransactionManager)
-        sessionFactory = context.getBean(SessionFactory)
-        return sessionFactory
+        return null
     }
+
+    public SessionFactory getSessionFactory() {
+        getMainContext().getBean("sessionFactory", SessionFactory)
+    }
+
 }
