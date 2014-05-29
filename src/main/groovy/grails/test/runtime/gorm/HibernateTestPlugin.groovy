@@ -20,7 +20,6 @@ import grails.orm.bootstrap.HibernateDatastoreSpringInitializer
 import grails.test.runtime.TestEvent
 import grails.test.runtime.TestPlugin
 import grails.test.runtime.TestRuntime
-import grails.util.Holders;
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -29,13 +28,11 @@ import javax.activation.DataSource
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.InstanceFactoryBean
-import org.codehaus.groovy.grails.orm.hibernate.support.HibernatePersistenceContextInterceptor
+import org.codehaus.groovy.grails.plugins.datasource.EmbeddedDatabaseShutdownHook
 import org.codehaus.groovy.grails.support.PersistenceContextInterceptor
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.jdbc.datasource.DriverManagerDataSource
-import org.springframework.orm.hibernate4.SessionHolder
-import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * a TestPlugin for TestRuntime for adding Grails DomainClass (GORM) support
@@ -89,6 +86,7 @@ class HibernateTestPlugin implements TestPlugin {
                 username = "sa"
                 password = ""
             }
+            embeddedDatabaseShutdownHook(EmbeddedDatabaseShutdownHook)
         }
     }
 
