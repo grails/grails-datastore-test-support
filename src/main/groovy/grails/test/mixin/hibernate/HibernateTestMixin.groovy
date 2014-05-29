@@ -15,6 +15,7 @@
 package grails.test.mixin.hibernate
 
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.test.mixin.support.SkipMethod;
 import grails.test.runtime.TestPluginRegistrar
 import grails.test.runtime.TestPluginUsage
 import grails.test.runtime.gorm.HibernateTestPlugin
@@ -68,6 +69,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin implements TestPluginRegist
         getRuntime().publishEvent("hibernateDomain", [domains: persistentClasses, config: config])
     }
     
+    @SkipMethod
     public Iterable<TestPluginUsage> getTestPluginUsages() {
         return TestPluginUsage.createForActivating(HibernateTestPlugin)
     }
