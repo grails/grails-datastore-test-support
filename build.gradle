@@ -7,11 +7,11 @@ configurations {
 ext {
     grailsVersion = '2.4.1.BUILD-SNAPSHOT'
     groovyVersion = '2.3.2'
-    datastoreVersion = '3.1.1.BUILD-SNAPSHOT'
+    datastoreVersion = '3.1.1.RELEASE'
 }
 
 group = 'org.grails'
-version = "2.4.0.BUILD-SNAPSHOT"
+version = "1.0-grails-2.4"
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
