@@ -2,6 +2,9 @@ package grails.test.mixin.mongodb
 
 import grails.persistence.Entity
 import grails.test.mixin.TestMixin
+
+import org.bson.types.ObjectId
+
 import spock.lang.Specification
 
 /**
@@ -22,7 +25,7 @@ class MongoMixinSpec extends Specification{
 
 @Entity
 class Person {
-    Object id
+    ObjectId id
     Long version
     String name
 }
