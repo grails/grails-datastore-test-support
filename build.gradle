@@ -8,6 +8,7 @@ ext {
     grailsVersion = '2.4.3.BUILD-SNAPSHOT'
     groovyVersion = '2.3.4'
     datastoreVersion = '3.1.1.RELEASE'
+    gormMongoVersion = '3.0.2.BUILD-SNAPSHOT'
     springVersion = '4.0.6.RELEASE'
 }
 
@@ -35,6 +36,7 @@ dependencies {
     provided "org.grails:grails-plugin-testing:$grailsVersion"
     provided "org.grails:grails-datastore-gorm:$datastoreVersion"
     provided "org.grails:grails-datastore-gorm-hibernate4:$datastoreVersion"
+    provided "org.grails:grails-datastore-gorm-mongodb:$gormMongoVersion"
     provided "org.grails:grails-datastore-core:$datastoreVersion"
     provided "javax.servlet:javax.servlet-api:3.0.1"
     provided "junit:junit:4.11"
