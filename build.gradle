@@ -5,13 +5,14 @@ configurations {
 }
 
 ext {
-    grailsVersion = '2.3.9'
+    grailsVersion = '2.3.11'
     groovyVersion = '2.1.9'
-    datastoreVersion = '3.1.1.RELEASE'
+    datastoreVersion = '3.1.2.BUILD-SNAPSHOT'
+    springVersion = '3.2.9.RELEASE'
 }
 
 group = 'org.grails'
-version = "1.0-grails-2.3"
+version = "1.0.1-grails-2.3-SNAPSHOT"
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
@@ -30,6 +31,7 @@ dependencies {
     provided "org.grails:grails-datastore-gorm-hibernate4:$datastoreVersion"
     provided "org.grails:grails-datastore-core:$datastoreVersion"
     provided "javax.servlet:javax.servlet-api:3.0.1"
+    provided "org.springframework:spring-orm:$springVersion"
     provided "junit:junit:4.11"
 }
 
