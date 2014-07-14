@@ -28,6 +28,7 @@ import javax.activation.DataSource
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.InstanceFactoryBean
+import org.codehaus.groovy.grails.orm.hibernate.cfg.HibernateUtils;
 import org.codehaus.groovy.grails.plugins.datasource.EmbeddedDatabaseShutdownHook
 import org.codehaus.groovy.grails.support.PersistenceContextInterceptor
 import org.hibernate.SessionFactory
@@ -210,10 +211,19 @@ class HibernateTestPlugin implements TestPlugin {
             case 'hibernateDomain':
                 hibernateDomain(event.runtime, event.arguments)
                 break
+            case 'applicationInitialized':
+                enhanceDomains(event.runtime, (GrailsApplication)event.arguments.grailsApplication)
+                break
         }
     }
     
     void close(TestRuntime runtime) {
         runtime.removeValue('initializedHibernatePersistentClasses')
     }
+    
+    void enhanceDomains(TestRuntime runtime, GrailsApplication grailsApplication) {
+        HibernateUtils.enhanceSessionFactories(grailsApplication.mainContext, grailsApplication)
+    }
 }
+
+
