@@ -25,6 +25,9 @@ class RelationshipMethodsSpec extends Specification {
         assert painting.gallery.name == gallery.name
         assert painter.paintings.contains(painting)
         assert gallery.paintings.contains(painting)
+        
+        where:
+        counter << (1..10).flatten()
     }
 }
 
