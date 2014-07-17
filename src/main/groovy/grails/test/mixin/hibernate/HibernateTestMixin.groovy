@@ -31,7 +31,7 @@ import org.springframework.orm.hibernate4.SessionHolder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
-import javax.activation.DataSource
+import javax.sql.DataSource
 
 /**
  * A Mixin that sets up a Hibernate domain model
