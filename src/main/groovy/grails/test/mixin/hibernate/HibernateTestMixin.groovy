@@ -15,13 +15,13 @@
 package grails.test.mixin.hibernate
 
 import grails.test.mixin.support.GrailsUnitTestMixin
-import grails.test.mixin.support.SkipMethod;
+import grails.test.mixin.support.SkipMethod
 import grails.test.runtime.TestPluginRegistrar
 import grails.test.runtime.TestPluginUsage
 import grails.test.runtime.gorm.HibernateTestPlugin
 import groovy.transform.CompileStatic
 
-import javax.activation.DataSource
+import javax.sql.DataSource
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory

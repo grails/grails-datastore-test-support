@@ -23,7 +23,7 @@ import grails.test.runtime.TestRuntime
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
-import javax.activation.DataSource
+import javax.sql.DataSource
 
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
