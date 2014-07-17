@@ -51,6 +51,27 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.29'
         // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
         test "org.grails:grails-datastore-test-support:1.0.1-grails-2.4-SNAPSHOT"
+        
+        // force certain g-d-m version
+        [
+            'grails-datastore-core',
+            'grails-datastore-gorm-hibernate-core',
+            'grails-datastore-gorm-hibernate4',
+            'grails-datastore-gorm-plugin-support',
+            'grails-datastore-gorm',
+            'grails-datastore-simple'
+        ].each { 
+            runtime "org.grails:$it:3.1.2.BUILD-SNAPSHOT", {
+                exclude group:'org.springframework', name:'spring-context'
+                exclude group:'org.springframework', name:'spring-core'
+                exclude group:'org.springframework', name:'spring-beans'
+                exclude group:'org.grails', name:'grails-bootstrap'
+                exclude group:'org.grails', name:'grails-core'
+                exclude group:'org.grails', name:'grails-async'
+                exclude group:'org.hibernate', name:'hibernate-core'
+                exclude group:'org.hibernate', name:'hibernate-commons-annotations'
+            }
+        }
     }
 
     plugins {
