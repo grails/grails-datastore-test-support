@@ -45,19 +45,19 @@ dependencies {
     provided "com.github.fakemongo:fongo:1.5.4"
 }
 
-sourceSets.main.compileClasspath += configurations.provided
+sourceSets.main.compileClasspath += [configurations.provided]
 sourceSets.test.compileClasspath = configurations.provided + sourceSets.test.compileClasspath
 sourceSets.test.runtimeClasspath = configurations.provided + sourceSets.test.runtimeClasspath
-javadoc.classpath += configurations.provided
+javadoc.classpath += [configurations.provided]
 
 idea {
   module{
-    scopes.PROVIDED.plus += configurations.provided
+    scopes.PROVIDED.plus += [configurations.provided]
   }
 }
 eclipse {
   classpath {
-    plusConfigurations += configurations.provided
+    plusConfigurations += [configurations.provided]
   }
 }
 
