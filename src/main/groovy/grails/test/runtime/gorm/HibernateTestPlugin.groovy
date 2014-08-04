@@ -168,7 +168,7 @@ class HibernateTestPlugin implements TestPlugin {
     void registerBeans(TestRuntime runtime, GrailsApplication grailsApplication) {
         configureDefaultDataSource(runtime, false)
         if(runtime.containsValueFor("hibernatePersistentClassesToRegister")) {
-            Collection<Class<?>> persistentClasses = runtime.removeValue("hibernatePersistentClassesToRegister", Collection)
+            Collection<Class<?>> persistentClasses = runtime.getValue("hibernatePersistentClassesToRegister", Collection)
             registerHibernateDomains(runtime, grailsApplication, persistentClasses, runtime.getValueIfExists("hibernateInitializerConfig", Properties), false)
         }
     }
