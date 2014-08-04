@@ -32,7 +32,7 @@ import org.codehaus.groovy.grails.plugins.datasource.EmbeddedDatabaseShutdownHoo
 import org.codehaus.groovy.grails.support.PersistenceContextInterceptor
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
-import org.springframework.jdbc.datasource.DriverManagerDataSource
+import org.springframework.jdbc.datasource.SingleConnectionDataSource
 
 /**
  * a TestPlugin for TestRuntime for adding Grails DomainClass (GORM) support
@@ -80,8 +80,8 @@ class HibernateTestPlugin implements TestPlugin {
     @CompileStatic(TypeCheckingMode.SKIP)
     protected void configureDefaultDataSource(TestRuntime runtime, boolean immediateDelivery = true) {
         defineBeans(runtime, immediateDelivery) {
-            dataSource(DriverManagerDataSource) {
-                url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_DELAY=-1"
+            dataSource(SingleConnectionDataSource) {
+                url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000"
                 driverClassName = "org.h2.Driver"
                 username = "sa"
                 password = ""
