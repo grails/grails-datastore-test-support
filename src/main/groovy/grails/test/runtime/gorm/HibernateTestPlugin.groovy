@@ -87,7 +87,6 @@ class HibernateTestPlugin implements TestPlugin {
                 password = ""
                 suppressClose = true
             }
-            embeddedDatabaseShutdownHook(EmbeddedDatabaseShutdownHook)
         }
     }
 
