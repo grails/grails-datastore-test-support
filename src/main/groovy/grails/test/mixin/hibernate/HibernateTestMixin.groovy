@@ -26,7 +26,7 @@ import org.hibernate.SessionFactory
 import org.junit.After
 import org.junit.AfterClass
 import org.junit.Before
-import org.springframework.jdbc.datasource.DriverManagerDataSource
+import org.springframework.jdbc.datasource.SingleConnectionDataSource
 import org.springframework.orm.hibernate4.SessionHolder
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionSynchronizationManager
@@ -100,8 +100,8 @@ class HibernateTestMixin extends GrailsUnitTestMixin{
 
     protected static void configureDefaultDataSource() {
         defineBeans {
-            dataSource(DriverManagerDataSource) {
-                url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_DELAY=-1"
+            dataSource(SingleConnectionDataSource) {
+                url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000"
                 driverClassName = "org.h2.Driver"
                 username = "sa"
                 password = ""
