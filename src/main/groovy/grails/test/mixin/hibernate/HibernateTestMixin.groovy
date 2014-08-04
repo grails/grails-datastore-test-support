@@ -105,6 +105,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin{
                 driverClassName = "org.h2.Driver"
                 username = "sa"
                 password = ""
+                suppressClose = true
             }
         }
     }
