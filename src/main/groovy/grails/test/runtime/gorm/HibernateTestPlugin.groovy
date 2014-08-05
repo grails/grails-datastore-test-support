@@ -25,14 +25,15 @@ import groovy.transform.TypeCheckingMode
 
 import javax.sql.DataSource
 
+import org.apache.tomcat.jdbc.pool.DataSource as TomcatDataSource
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.InstanceFactoryBean
-import org.codehaus.groovy.grails.plugins.datasource.EmbeddedDatabaseShutdownHook
 import org.codehaus.groovy.grails.support.PersistenceContextInterceptor
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
-import org.springframework.jdbc.datasource.SingleConnectionDataSource
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
 
 /**
  * a TestPlugin for TestRuntime for adding Grails DomainClass (GORM) support
@@ -80,13 +81,31 @@ class HibernateTestPlugin implements TestPlugin {
     @CompileStatic(TypeCheckingMode.SKIP)
     protected void configureDefaultDataSource(TestRuntime runtime, boolean immediateDelivery = true) {
         defineBeans(runtime, immediateDelivery) {
-            dataSource(SingleConnectionDataSource) {
+            dataSourceUnproxied(TomcatDataSource) { bean ->
+                bean.destroyMethod = "close"
                 url = "jdbc:h2:mem:grailsDB;MVCC=TRUE;LOCK_TIMEOUT=10000"
                 driverClassName = "org.h2.Driver"
                 username = "sa"
                 password = ""
-                suppressClose = true
+                initialSize = 1
+                minIdle = 1
+                maxIdle = 1
+                maxActive = 10
+                maxWait = 10000
+                maxAge = 10 * 60000
+                timeBetweenEvictionRunsMillis = 5000
+                minEvictableIdleTimeMillis = 60000
+                validationQuery = "SELECT 1"
+                validationQueryTimeout = 3
+                validationInterval = 15000
+                testOnBorrow = true
+                testWhileIdle = true
+                testOnReturn = false
+                jdbcInterceptors = "ConnectionState"
+                defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
             }
+            dataSourceLazy(LazyConnectionDataSourceProxy, ref('dataSourceUnproxied'))
+            dataSource(TransactionAwareDataSourceProxy, ref('dataSourceLazy'))
         }
     }
 
