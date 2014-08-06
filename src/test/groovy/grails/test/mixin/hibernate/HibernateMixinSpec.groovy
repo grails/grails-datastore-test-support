@@ -31,5 +31,9 @@ class Person {
     Long id
     Long version
     String name
+    
+    static mapping = {
+        cache true
+    }
 }
 

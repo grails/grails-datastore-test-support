@@ -47,6 +47,7 @@ class HibernateTestPlugin implements TestPlugin {
     String[] requiredFeatures = ['grailsApplication', 'coreBeans']
     String[] providedFeatures = ['domainClass', 'gorm', 'hibernateGorm']
     int ordinal = 1
+    static Properties defaultHibernateConfig = ['hibernate.cache.use_second_level_cache': 'true', 'hibernate.cache.use_query_cache': 'false', 'hibernate.cache.region.factory_class': 'org.hibernate.cache.ehcache.EhCacheRegionFactory'] as Properties 
     
     void connectPersistenceInterceptor(TestRuntime runtime) {
         GrailsApplication grailsApplication = getGrailsApplication(runtime)
@@ -201,11 +202,36 @@ class HibernateTestPlugin implements TestPlugin {
             grailsApplication.config.getProperty("dataSource")
         }
         def initializer = new HibernateDatastoreSpringInitializer(persistentClasses)
+
+        Properties mergedConfig = mergeHibernateConfig(grailsApplication, defaultHibernateConfig, initializerConfig)
+        initializer.configuration = mergedConfig
+        
         def context = grailsApplication.getMainContext()
         def beansClosure = initializer.getBeanDefinitions((BeanDefinitionRegistry)context)
         runtime.putValue('initializedHibernatePersistentClasses', Collections.unmodifiableList(new ArrayList(persistentClasses)))
         defineBeans(runtime, immediateDelivery, beansClosure)
     }
+    
+    protected Properties mergeHibernateConfig(GrailsApplication grailsApplication, Properties defaultConfig, Properties initializerConfig) {
+        Properties mergedConfig = new Properties()
+        if(initializerConfig) {
+            mergedConfig.putAll(initializerConfig)
+        }
+        grailsApplication?.flatConfig?.each { k, v ->
+            String key = k as String
+            if(key.startsWith('hibernate.')) {
+                if(!mergedConfig.containsKey(key)) {
+                    mergedConfig.setProperty(key, v as String)
+                }
+            }
+        }
+        defaultConfig.each { k, v ->
+            if(!mergedConfig.containsKey(k)) {
+                mergedConfig.setProperty(k as String, v as String)
+            }
+        }
+        mergedConfig
+    } 
 
     void onTestEvent(TestEvent event) {
         switch(event.name) {
