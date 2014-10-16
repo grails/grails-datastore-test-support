@@ -30,6 +30,7 @@ import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.InstanceFactoryBean
 import org.codehaus.groovy.grails.support.PersistenceContextInterceptor
+import org.codehaus.groovy.grails.test.support.GrailsTestTransactionInterceptor
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
@@ -169,11 +170,13 @@ class HibernateTestPlugin implements TestPlugin {
         }
     }
 
-    protected void before(TestRuntime runtime) {
+    protected void before(TestRuntime runtime, Object target) {
         connectPersistenceInterceptor(runtime)
+        initTransaction(runtime, target)
     }
 
     protected void after(TestRuntime runtime) {
+        destroyTransaction(runtime)
         destroyPersistenceInterceptor(runtime)
     }
     
@@ -233,10 +236,25 @@ class HibernateTestPlugin implements TestPlugin {
         mergedConfig
     } 
 
+    protected void initTransaction(TestRuntime runtime, Object target) {
+        def transactionInterceptor = new GrailsTestTransactionInterceptor(getGrailsApplication(runtime).mainContext)
+        if (runtime.containsValueFor("hibernateInterceptor") && transactionInterceptor.isTransactional(target)) {
+            transactionInterceptor.init()
+            runtime.putValue("hibernateTransactionInterceptor", transactionInterceptor)
+        }
+    }
+
+    protected void destroyTransaction(TestRuntime runtime) {
+        if (runtime.containsValueFor("hibernateTransactionInterceptor")) {
+            def transactionInterceptor = runtime.removeValue("hibernateTransactionInterceptor", GrailsTestTransactionInterceptor)
+            transactionInterceptor.destroy()
+        }
+    }
+
     void onTestEvent(TestEvent event) {
         switch(event.name) {
             case 'before':
-                before(event.runtime)
+                before(event.runtime, event.arguments.testInstance)
                 break
             case 'after':
                 after(event.runtime)
