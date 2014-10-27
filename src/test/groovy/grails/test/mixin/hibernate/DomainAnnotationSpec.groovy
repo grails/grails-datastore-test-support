@@ -17,6 +17,6 @@ class DomainAnnotationSpec extends Specification{
             Person.get(personId).name == 'John Doe'
             sessionFactory != null
             transactionManager != null
-            session != null
+            hibernateSession != null
     }
 }

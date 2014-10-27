@@ -78,7 +78,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin implements TestPluginRegist
         getMainContext().getBean("transactionManager", PlatformTransactionManager)
     }
     
-    public Session getSession() {
+    public Session getHibernateSession() {
         Object value = TransactionSynchronizationManager.getResource(getSessionFactory());
         if (value instanceof Session) {
             return (Session) value;
