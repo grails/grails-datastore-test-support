@@ -59,7 +59,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin{
     /**
      * Current hibernate session
      */
-    Session session
+    Session hibernateSession
 
     /**
      * Sets up a GORM for Hibernate domain for the given domain classes
@@ -79,7 +79,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin{
             hibernateInterceptor = new HibernatePersistenceContextInterceptor(sessionFactory: sessionFactory)
             hibernateInterceptor.init()
             SessionHolder holder = TransactionSynchronizationManager.getResource(sessionFactory)
-            session = holder.getSession()
+            hibernateSession = holder.getSession()
         }
     }
 
@@ -87,7 +87,7 @@ class HibernateTestMixin extends GrailsUnitTestMixin{
     void destroySession() {
         if(hibernateInterceptor) {
             hibernateInterceptor.destroy()
-            session = null
+            hibernateSession = null
             hibernateInterceptor = null
         }
     }

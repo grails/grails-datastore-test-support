@@ -18,7 +18,7 @@ class HibernateMixinSpec extends Specification{
             Person.count() == 0
             sessionFactory != null
             transactionManager != null
-            session != null
+            hibernateSession != null
     }
 }
 
