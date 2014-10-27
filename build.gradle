@@ -23,6 +23,7 @@ apply plugin: 'idea'
 repositories {
     mavenLocal()
     jcenter()
+    maven { url "https://repo.grails.org/grails/libs-snapshots-local" }
 }
 
 dependencies {
