@@ -22,6 +22,7 @@ apply plugin: 'idea'
 
 repositories {
     mavenLocal()
+    jcenter()
     mavenCentral()
 }
 
