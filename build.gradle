@@ -5,11 +5,11 @@ configurations {
 }
 
 ext {
-    grailsVersion = '2.4.3'
-    groovyVersion = '2.3.6'
-    datastoreVersion = '3.1.2.RELEASE'
+    grailsVersion = '2.4.4.BUILD-SNAPSHOT'
+    groovyVersion = '2.3.7'
+    datastoreVersion = '3.1.3.BUILD-SNAPSHOT'
     gormMongoVersion = '3.0.2.RELEASE'
-    springVersion = '4.0.6.RELEASE'
+    springVersion = '4.0.7.RELEASE'
 }
 
 group = 'org.grails'
