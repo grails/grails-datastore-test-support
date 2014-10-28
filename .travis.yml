@@ -1,4 +1,6 @@
 language: groovy
+services:
+  - mongodb
 jdk:
   - oraclejdk7
 env:
