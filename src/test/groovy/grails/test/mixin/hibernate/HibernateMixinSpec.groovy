@@ -3,10 +3,12 @@ package grails.test.mixin.hibernate
 import grails.persistence.Entity
 import grails.test.mixin.TestMixin
 import spock.lang.Specification
+import spock.lang.Stepwise
 
 /**
  * Created by graemerocher on 24/03/14.
  */
+@Stepwise
 @TestMixin(HibernateTestMixin)
 class HibernateMixinSpec extends Specification{
 
@@ -23,6 +25,11 @@ class HibernateMixinSpec extends Specification{
             sessionFactory != null
             transactionManager != null
             hibernateSession != null
+    }
+
+    void "Test that the transaction is rolled back after each test"() {
+        expect:
+            Person.count() == 0
     }
 }
 
